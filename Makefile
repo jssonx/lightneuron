@@ -16,6 +16,7 @@ MATMUL_TARGETS = matmul_naive matmul_blocking matmul_blas matmul_sparse matmul_t
 				 matmul_blocking_64 matmul_blocking_128 matmul_blocking_256 matmul_blocking_512 matmul_blocking_1024 \
 				 matmul_sparse_64 matmul_sparse_128 matmul_sparse_256 matmul_sparse_512 matmul_sparse_1024 matmul_sparse_2048 \
 				 matmul_thread_64 matmul_thread_128 matmul_thread_256 matmul_thread_512 matmul_thread_1024 \
+				 gemm_v1 gemm_v2
 
 LEVEL ?= l1
 
@@ -36,10 +37,16 @@ all_tests:
 	$(CC) -o tests/$@ $(TEST_FILES) $(UNITY_FILES) $(COMMON_SRC) $(CFLAGS) $(HDF5_FLAGS) 
 	./tests/$@
 
-.PHONY : $(MATMUL_TARGETS)
+# make matmul_naive_64 LEVEL=l1 USE_PMU=1
+.PHONY: $(MATMUL_TARGETS)
 $(MATMUL_TARGETS):
+ifeq ($(USE_PMU),1)
 	$(CC) -o $@ ./perf/$@.c $(COMMON_SRC) $(CFLAGS) $(HDF5_FLAGS)
 	/usr/local/pmu-tools/pmu-tools/toplev.py --core S0-C0 -$(LEVEL) -v --no-desc taskset -c 0 ./$@
+else
+	$(CC) -o $@ ./perf/$@.c $(COMMON_SRC) $(CFLAGS) $(HDF5_FLAGS)
+	./$@
+endif
 
 .PHONY: clean
 clean:
