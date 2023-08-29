@@ -3,7 +3,8 @@ CFLAGS = -I. -lm -lblas
 
 HDF5_FLAGS = -I/usr/include/hdf5/serial -L/usr/lib/x86_64-linux-gnu/hdf5/serial -lhdf5
 COMMON_HDRS = ./utils/data_utils.h ./kernel/conv.h ./kernel/matrix_ops.h ./kernel/linear.h ./kernel/functional.h ./kernel/nn.h
-COMMON_SRC = ./utils/data_utils.c ./kernel/conv.c ./kernel/functional.c ./kernel/matrix_ops.c ./kernel/linear.c ./kernel/nn.c
+COMMON_SRC = ./utils/data_utils.c ./kernel/conv.c ./kernel/functional.c ./kernel/matrix_ops.c ./kernel/linear.c ./kernel/nn.c \
+			 ./kernel/gemm/gemm_v1.c ./kernel/gemm/gemm_v2.c
 
 # Unity test framework
 UNITY_FILES = ./tests/unity/unity.c
@@ -16,7 +17,7 @@ MATMUL_TARGETS = matmul_naive matmul_blocking matmul_blas matmul_sparse matmul_t
 				 matmul_blocking_64 matmul_blocking_128 matmul_blocking_256 matmul_blocking_512 matmul_blocking_1024 \
 				 matmul_sparse_64 matmul_sparse_128 matmul_sparse_256 matmul_sparse_512 matmul_sparse_1024 matmul_sparse_2048 \
 				 matmul_thread_64 matmul_thread_128 matmul_thread_256 matmul_thread_512 matmul_thread_1024 \
-				 gemm_v1 gemm_v2
+				 gemm_v1_perf gemm_v2_perf
 
 LEVEL ?= l1
 
