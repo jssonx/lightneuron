@@ -1,22 +1,29 @@
 #include "gemm.h"
 
-#define A(i,j) A[(i)*lda + (j)]
-#define B(i,j) B[(i)*ldb + (j)]
-#define C(i,j) C[(i)*ldc + (j)]
+/* Create macros so that the matrices are stored in column-major order */
+
+#define A(i, j) a[(j) * lda + (i)]
+#define B(i, j) b[(j) * ldb + (i)]
+#define C(i, j) c[(j) * ldc + (i)]
+
+/* Routine for computing C = A * B + C */
 
 void gemm_v1(int m, int n, int k,
-            float *A, int lda, 
-            float *B, int ldb,
-            float *C, int ldc)
+             double *a, int lda,
+             double *b, int ldb,
+             double *c, int ldc)
 {
-    for (int i = 0; i < m; i++) // Loop over the rows of C
-    {
-        for (int j = 0; j < n; j++) // Loop over the columns of C
-        {
-            C(i, j) = 0.0; // Initialize C[i, j]
-            for (int p = 0; p < k; p++) // Update C(i, j) with the inner product of the ith row of A and the jth column of B
-            {
-                C(i, j) += A(i, p) * B(p, j);
+    int i, j, p;
+
+    for (i = 0; i < m; i++)
+    { /* Loop over the rows of C */
+        for (j = 0; j < n; j++)
+        { /* Loop over the columns of C */
+            for (p = 0; p < k; p++)
+            { /* Update C( i,j ) with the inner
+ product of the ith row of A and
+ the jth column of B */
+                C(i, j) = C(i, j) + A(i, p) * B(p, j);
             }
         }
     }
