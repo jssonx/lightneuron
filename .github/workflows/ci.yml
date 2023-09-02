@@ -10,5 +10,8 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v2
 
+    - name: Install HDF5
+      run: sudo apt-get install -y libhdf5-serial-dev
+
     - name: Run Tests
       run: make test
