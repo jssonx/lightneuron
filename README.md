@@ -1,6 +1,6 @@
 # LightNeuron 
 
-![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/Continuous-Integration/badge.svg)
+![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/test/badge.svg)
 
 ![lightneuron](./img/lightneuron.png)
 
