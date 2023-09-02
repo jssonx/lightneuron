@@ -15,6 +15,7 @@
 /* Routine for computing C = A * B + C */
 
 void AddDot4x4( int, double *, int, double *, int, double *, int );
+void InnerKernel( int, int, int, double *, int, double *, int, double *, int);
 
 void gemm_4x4_v12( int m, int n, int k, double *a, int lda, 
                                     double *b, int ldb,

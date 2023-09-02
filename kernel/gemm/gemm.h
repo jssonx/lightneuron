@@ -6,6 +6,7 @@
 void gemm_v1(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc);
 void gemm_v2(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc);
 void gemm_v3(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc);
+void gemm_v4(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc);
 
 void gemm_1x4_v4(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc);
 void gemm_1x4_v5(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc);
