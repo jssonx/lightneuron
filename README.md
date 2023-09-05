@@ -63,8 +63,6 @@ make perf TARGET=matmul_naive CACHE_LEVEL=L1 USE_PMU=1
 
 In this command, `USE_PMU=1` likely activates the Performance Monitoring Unit (PMU), which is a set of special-purpose registers for monitoring hardware-level events related to performance. 
 
-Remember to replace `[your-target]` and `[your-cache-level]` with the appropriate values for your profiling requirements.
-
 ## GEMM Performance Comparison
 
 ![gflops_performance](./img/gflops_performance.png)
