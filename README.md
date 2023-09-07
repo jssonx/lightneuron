@@ -70,3 +70,34 @@ In this command, `USE_PMU=1` likely activates the Performance Monitoring Unit (P
 A significant aspect of the project is the meticulous optimization of the GEMM operation, exhibiting a diverse performance range in GFLOPS across various matrix dimensions. This is achieved through a combination of sophisticated techniques: intricate loop unrolling, proactive data prefetching, strategic cache management, precise data alignment, concurrent multithreading, and the utilization of specialized x86 architecture instruction sets, including AVX2 and SSE. These enhancements are strategically designed to maximize CPU computational efficiency, substantially boosting the performance of matrix multiplication operations.
 
 ![gflops_performance](./img/gflops_performance.png)
+
+GFLOPs at matrix size 1200x1200:
+<!-- benchmark_results -->
+| Kernel | GFLOPs/s | Performance relative to cuBLAS |
+|:-------|---------:|:-------------------------------|
+| OpenBLAS | `13.4` | 100.0% |
+| gemm_4x4_v16 | `12.2` | 91.0% |
+| gemm_4x4_v14 | `12.0` | 89.2% |
+| gemm_4x4_v15 | `11.9` | 88.6% |
+| gemm_4x4_v12 | `10.2` | 75.6% |
+| gemm_4x4_v13 | `6.9` | 51.1% |
+| gemm_4x4_v11 | `3.8` | 28.0% |
+| gemm_v4 | `3.5` | 25.9% |
+| gemm_4x4_v7 | `2.4` | 18.2% |
+| gemm_4x4_v8 | `2.4` | 17.9% |
+| gemm_4x4_v10 | `2.4` | 17.9% |
+| gemm_4x4_v9 | `2.4` | 17.6% |
+| gemm_1x4_v9 | `2.2` | 16.1% |
+| gemm_1x4_v7 | `2.2` | 16.0% |
+| gemm_1x4_v8 | `2.1` | 15.9% |
+| gemm_1x4_v10 | `2.1` | 15.7% |
+| gemm_4x4_v6 | `2.0` | 14.5% |
+| gemm_1x4_v6 | `1.6` | 11.9% |
+| gemm_4x4_v5 | `1.3` | 9.8% |
+| gemm_4x4_v4 | `1.3` | 9.6% |
+| gemm_1x4_v5 | `1.3` | 9.6% |
+| gemm_v3 | `1.3` | 9.5% |
+| gemm_1x4_v4 | `1.2` | 9.3% |
+| gemm_v1 | `1.2` | 8.8% |
+| gemm_v2 | `0.9` | 6.7% |
+<!-- benchmark_results -->

@@ -3,8 +3,12 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
-import numpy as np
 import os
+import numpy as np
+
+####################################################################################################
+# PLOT 1: PERFORMANCE COMPARISON
+####################################################################################################
 
 # Set the aesthetic style of the plots
 sns.set(style="ticks", palette="pastel")
@@ -12,27 +16,41 @@ sns.set(style="ticks", palette="pastel")
 # Path to the 'bench' directory
 bench_path = './bench'
 
-# Initialize a DataFrame to store all data
-all_data = pd.DataFrame()
+# Initialize a list to store indices from each file
+indices = []
 
+# Collect indices from each file
 for filename in os.listdir(bench_path):
     if filename.endswith('.txt'):
         file_path = os.path.join(bench_path, filename)
-        # Read data from each file
-        # Remove the '.txt' extension from the filename for use as a column name
-        column_name = filename.replace('.txt', '')
-        data = pd.read_csv(file_path, header=None, names=['N', column_name], index_col=0)
-        # Interpolate missing values for a smoother line
-        data = data.reindex(range(data.index.min(), data.index.max())).interpolate()
-        all_data = pd.concat([all_data, data], axis=1)
+        data = pd.read_csv(file_path, header=None, index_col=0)
+        indices.append(data.index.tolist())
 
-# Sort columns by the performance at N=1000 (or the closest available value)
-# We take the value for N=1000 or interpolate if it doesn't exist
-performance_at_1200 = all_data.loc[all_data.index.get_loc(1200, method='nearest')].sort_values(ascending=False)
-sorted_columns = performance_at_1200.index
+# Find the common indices in all files
+common_indices = set(indices[0]).intersection(*indices[1:])
+
+# Convert the set of common indices to a sorted list
+common_indices_list = sorted(list(common_indices))
+
+# Initialize a DataFrame to store all data
+all_data = pd.DataFrame(index=common_indices_list)
+
+# Read and combine data from each file
+for filename in os.listdir(bench_path):
+    if filename.endswith('.txt'):
+        file_path = os.path.join(bench_path, filename)
+        column_name = filename.replace('.txt', '')
+        data = pd.read_csv(file_path, header=None, names=[column_name], index_col=0)
+        all_data = all_data.join(data, how='inner')
+
+# Sort the DataFrame index
+all_data.sort_index(inplace=True)
 
 # Plot the data
 fig, ax = plt.subplots(figsize=(10, 6))  # Adjust the size of the figure
+
+# Sort columns by their performance at the largest common N value
+sorted_columns = all_data.loc[max(all_data.index)].sort_values(ascending=False).index
 
 # Generate a color palette that's visually distinct
 colors = plt.cm.tab20(np.linspace(0, 1, len(sorted_columns)))
@@ -59,5 +77,32 @@ ax.tick_params(axis='both', which='major', labelsize=12)
 sns.despine(trim=True, offset=10)
 
 # Save the figure
-fig_path = './img/gflops_performance.png'
+fig_path = './img/gflops_performance_test.png'
 plt.savefig(fig_path, format='png', dpi=300, bbox_inches='tight')
+
+####################################################################################################
+# PLOT 2: PERFORMANCE RELATIVE TO OpenBLAS
+####################################################################################################
+
+# Get the data at matrix size 1200x1200
+data_at_1200 = all_data.loc[1200]
+
+# Benchmark: OpenBLAS
+openblas_gflops = data_at_1200['OpenBLAS']
+
+# Construct a Markdown table
+markdown_table = "GFLOPs at matrix size 1200x1200:\n"
+markdown_table += "<!-- benchmark_results -->\n"
+markdown_table += "| Kernel | GFLOPs/s | Performance relative to cuBLAS |\n"
+markdown_table += "|:-------|---------:|:-------------------------------|\n"
+
+for kernel in sorted_columns:
+    gflops = data_at_1200[kernel]
+    relative_performance = (gflops / openblas_gflops) * 100
+    markdown_table += f"| {kernel} | `{gflops:.1f}` | {relative_performance:.1f}% |\n"
+
+markdown_table += "<!-- benchmark_results -->\n"
+
+# Save the Markdown table
+with open('./benchmark_results.md', 'w') as f:
+    f.write(markdown_table)
