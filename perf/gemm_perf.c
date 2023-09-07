@@ -20,7 +20,7 @@ void free_matrix(double *matrix) {
 int main() {
     srand(time(NULL));
 
-    FILE *f = fopen("./bench/gemm_4x4_v16.txt", "w");
+    FILE *f = fopen("./bench/OpenBLAS.txt", "w");
     if (f == NULL) {
         printf("Error opening file!\n");
         exit(1);
@@ -33,12 +33,15 @@ int main() {
 
         printf("Performing multiplication for N = %d...\n", N);
         uint64_t start = nanos();
-        gemm_4x4_v16(N, N, N, A, N, B, N, C, N);
-        // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
+        int num_iterations = 3;
+        for (int i = 0; i < num_iterations; ++i) {
+            // gemm_4x4_v16(N, N, N, A, N, B, N, C, N);
+            cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
+        }
         uint64_t end = nanos();
 
         double gflop = (2.0 * N * N * N) * 1e-9;
-        double s = (end - start) * 1e-9;
+        double s = (end - start) * 1e-9 / (double)num_iterations;
         printf("%f GFLOPS -- %.2f ms\n", gflop / s, s * 1e3);
         fprintf(f, "%d, %f\n", N, gflop / s);
 
@@ -60,3 +63,5 @@ int main() {
 // gcc ./perf/gemm_perf.c ./kernel/gemm/gemm_1x4_v4.c -O2 && ./a.out
 
 // gcc ./perf/gemm_perf.c ./kernel/gemm/gemm_4x4_v11.c -O2 -msse3 && ./a.out
+
+// gcc ./perf/gemm_perf.c -lcblas -lopenblas && ./a.out

@@ -67,6 +67,6 @@ In this command, `USE_PMU=1` likely activates the Performance Monitoring Unit (P
 
 ## GEMM Optimization
 
-A significant aspect of the project is the meticulous optimization of the GEMM operation, exhibiting a diverse performance range in GFLOPS across various matrix dimensions. This is achieved through a combination of sophisticated techniques: intricate loop unrolling, proactive data prefetching, strategic cache management, precise data alignment, concurrent multithreading, and the utilization of specialized x86 architecture instruction sets, including Streaming SIMD Extensions (SSE). These enhancements are strategically designed to maximize CPU computational efficiency, substantially boosting the performance of matrix multiplication operations.
+A significant aspect of the project is the meticulous optimization of the GEMM operation, exhibiting a diverse performance range in GFLOPS across various matrix dimensions. This is achieved through a combination of sophisticated techniques: intricate loop unrolling, proactive data prefetching, strategic cache management, precise data alignment, concurrent multithreading, and the utilization of specialized x86 architecture instruction sets, including AVX2 and SSE. These enhancements are strategically designed to maximize CPU computational efficiency, substantially boosting the performance of matrix multiplication operations.
 
 ![gflops_performance](./img/gflops_performance.png)
