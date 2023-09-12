@@ -126,4 +126,4 @@ GFLOPs at matrix size 1200x1200:
 | gemm_v2 | `0.9` | 6.7% |
 <!-- benchmark_results -->
 
-This benchmark demonstrates the effective performance gains achieved through our optimization techniques, with several of our GEMM implementations nearing industry-standard performance levels.
+This benchmark demonstrates the effective performance gains achieved through our optimization techniques, with several of the GEMM implementations nearing industry-standard performance levels.
