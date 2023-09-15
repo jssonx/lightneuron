@@ -1,6 +1,8 @@
 # LightNeuron 
 
-![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/test/badge.svg) ![License](https://img.shields.io/badge/license-MIT-green)
+![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/test/badge.svg)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/2938278352a24dba9edb07e2e1d0738a)](https://app.codacy.com/gh/jssonx/lightneuron/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+![License](https://img.shields.io/badge/license-MIT-green)
 
 ![lightneuron](./img/lightneuron.png)
 
