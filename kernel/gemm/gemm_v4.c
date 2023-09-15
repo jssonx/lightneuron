@@ -1,8 +1,6 @@
 #include <immintrin.h>  // For AVX2
 #include "gemm.h"
 
-// gcc ./perf/gemm_perf.c ./kernel/gemm/gemm_v4.c -mavx2 -mfma && ./a.out
-
 /* Create macros so that the matrices are stored in column-major order */
 
 #define A(i, j) a[(j) * lda + (i)]
