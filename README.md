@@ -1,4 +1,10 @@
-# Matrix Optimized Inference Engine
+# LightNeuron
+
+![lightneuron](./img/lightneuron.png)
+
+LightNeuron is a lightweight neural network library, written in C and optimized for x86-64 systems. It's designed to be a learning tool for understanding the inner workings of neural networks, as well as a performance benchmarking tool for comparing the performance of different neural network models.
+
+![framework](./img/framework.png)
 
 ## Configuration for Optimal Environment
 
