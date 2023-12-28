@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include "kernel/matrix_ops.h"
+#include "kernel/gemm/gemm.h"
 #include "helpers.h"
 
 float *generate_random_matrix(int rows, int cols) {
