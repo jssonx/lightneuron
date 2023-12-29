@@ -15,20 +15,21 @@ bench_path = './bench'
 # Initialize a DataFrame to store all data
 all_data = pd.DataFrame()
 
-# List all files in the 'bench' directory and read their contents into a DataFrame
 for filename in os.listdir(bench_path):
     if filename.endswith('.txt'):
         file_path = os.path.join(bench_path, filename)
         # Read data from each file
-        data = pd.read_csv(file_path, header=None, names=['N', filename], index_col=0)
+        # Remove the '.txt' extension from the filename for use as a column name
+        column_name = filename.replace('.txt', '')
+        data = pd.read_csv(file_path, header=None, names=['N', column_name], index_col=0)
         # Interpolate missing values for a smoother line
         data = data.reindex(range(data.index.min(), data.index.max())).interpolate()
         all_data = pd.concat([all_data, data], axis=1)
 
 # Sort columns by the performance at N=1000 (or the closest available value)
 # We take the value for N=1000 or interpolate if it doesn't exist
-performance_at_1000 = all_data.loc[all_data.index.get_loc(1000, method='nearest')].sort_values(ascending=False)
-sorted_columns = performance_at_1000.index
+performance_at_1200 = all_data.loc[all_data.index.get_loc(1200, method='nearest')].sort_values(ascending=False)
+sorted_columns = performance_at_1200.index
 
 # Plot the data
 fig, ax = plt.subplots(figsize=(10, 6))  # Adjust the size of the figure
@@ -58,11 +59,5 @@ ax.tick_params(axis='both', which='major', labelsize=12)
 sns.despine(trim=True, offset=10)
 
 # Save the figure
-fig_path = 'gflops_performance.png'
+fig_path = './img/gflops_performance.png'
 plt.savefig(fig_path, format='png', dpi=300, bbox_inches='tight')
-
-# Show the plot
-plt.show()
-
-# Return the path to the saved figure
-fig_path

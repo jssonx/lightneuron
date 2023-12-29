@@ -77,5 +77,7 @@ Profile the performance of General Matrix Multiply (GEMM) operations, especially
 make perf matmul_naive l2
 ```
 
+## Performance Comparison
 
-gcc ./perf/gemm_perf.c ./kernel/gemm/gemm_v1.c && ./a.out
+![gflops_performance](./img/gflops_performance.png)
+

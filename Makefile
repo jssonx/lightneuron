@@ -51,4 +51,4 @@ endif
 
 .PHONY: clean
 clean:
-	rm -f $(BINS) $(TEST_EXECUTABLES) $(MATMUL_TARGETS)
+	rm -f a.out $(BINS) $(TEST_EXECUTABLES) $(MATMUL_TARGETS)
