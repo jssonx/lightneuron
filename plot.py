@@ -93,7 +93,7 @@ openblas_gflops = data_at_1200['OpenBLAS']
 # Construct a Markdown table
 markdown_table = "GFLOPs at matrix size 1200x1200:\n"
 markdown_table += "<!-- benchmark_results -->\n"
-markdown_table += "| Kernel | GFLOPs/s | Performance relative to cuBLAS |\n"
+markdown_table += "| Kernel | GFLOPs/s | Performance relative to OpenBLAS |\n"
 markdown_table += "|:-------|---------:|:-------------------------------|\n"
 
 for kernel in sorted_columns:

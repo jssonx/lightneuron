@@ -73,7 +73,7 @@ A significant aspect of the project is the meticulous optimization of the GEMM o
 
 GFLOPs at matrix size 1200x1200:
 <!-- benchmark_results -->
-| Kernel | GFLOPs/s | Performance relative to cuBLAS |
+| Kernel | GFLOPs/s | Performance relative to OpenBLAS |
 |:-------|---------:|:-------------------------------|
 | OpenBLAS | `13.4` | 100.0% |
 | gemm_4x4_v16 | `12.2` | 91.0% |
