@@ -1,6 +1,6 @@
 # LightNeuron 
 
-![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/test/badge.svg)
+![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/test/badge.svg) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ![lightneuron](./img/lightneuron.png)
 
