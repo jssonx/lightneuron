@@ -1,3 +1,4 @@
+// https://github.com/flame/how-to-optimize-gemm
 
 #include "gemm.h"
 /* Create macros so that the matrices are stored in column-major order */

@@ -1,6 +1,8 @@
-#include "gemm.h"
-/* Create macros so that the matrices are stored in column-major order */
+// https://github.com/flame/how-to-optimize-gemm
 
+#include "gemm.h"
+
+/* Create macros so that the matrices are stored in column-major order */
 #define A(i,j) a[ (j)*lda + (i) ]
 #define B(i,j) b[ (j)*ldb + (i) ]
 #define C(i,j) c[ (j)*ldc + (i) ]

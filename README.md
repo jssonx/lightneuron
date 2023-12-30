@@ -19,6 +19,18 @@ Targeted primarily at students, researchers, and developers, LightNeuron offers 
 
 ![framework](./img/framework.png)
 
+## Development Environment Specifications
+
+LightNeuron is optimized for x86-64 architectures, ensuring compatibility and efficiency on a wide range of systems. Below are the specifications of the primary development environment, which can serve as a benchmark for expected performance:
+
+- **CPU Architecture**: x86-64
+- **Processor**: Intel Core i5-10210U
+- **Number of Cores / Threads**: 4 / 8
+- **Cache Configuration**:
+  - L1 Cache: 256 KiB
+  - L2 Cache: 1 MiB
+  - L3 Cache: 6 MiB
+
 ## Prerequisites
 
 Ensure your system is ready for LightNeuron by installing the `perf` tool:
