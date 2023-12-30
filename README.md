@@ -1,5 +1,7 @@
 # LightNeuron 
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/d3997245d4dc4c1db66750996d255e0a)](https://app.codacy.com/gh/jssonx/lightneuron?utm_source=github.com&utm_medium=referral&utm_content=jssonx/lightneuron&utm_campaign=Badge_Grade)
+
 ![GitHub Actions status](https://github.com/jssonx/lightneuron/workflows/test/badge.svg) ![License](https://img.shields.io/badge/license-MIT-green)
 
 ![lightneuron](./img/lightneuron.png)
