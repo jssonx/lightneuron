@@ -109,7 +109,7 @@ LightNeuron places a strong emphasis on optimizing General Matrix Multiply (GEMM
 
 The result of these enhancements is a notable increase in CPU computational efficiency, boosting the performance of matrix multiplication operations considerably.
 
-| Implementation                  | Cache references (millions) | L1-d cache misses (millions) | LL cache misses (millions) |
+| Implementation                  | Cache References (millions) | L1-d Cache Misses (millions) | LL Cache Misses (millions) |
 |---------------------------------|----------------------------:|----------------------------:|--------------------------:|
 | +parallel loops                 | 4934.44                     | 406.47                      | 404.9                     |
 | +tiling                         | 5010.46                     | 620.66                      | 13.29                     |
