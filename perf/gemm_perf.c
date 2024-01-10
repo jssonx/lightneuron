@@ -3,10 +3,24 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
-#include <cblas.h>
+// #include <cblas.h>
 #include "../kernel/gemm/gemm.h"
 #include "helpers.h"
 #include <immintrin.h>
+#include "mkl.h"
+
+/*
+ * Intel(R) Core(TM) i5-10210U CPU @ 1.60GHz
+ * Microarchitecture: Comet Lake
+ * 1.6 GHz is the base frequency of the CPU
+ * 4 cores, 2 threads per core
+ * 16 DP FLOPS/cycle (AVX2, FP64)
+ * Single core theoretical peak performance = 1.6 GHz * 16 FLOPS/cycle = 25.6 GFLOPS
+ * Multi-core theoretical peak performance = 25.6 GFLOPS * 4 cores = 102.4 GFLOPS
+ * reference:
+ *  - https://indico.cern.ch/event/814979/contributions/3401193/attachments/1831477/3105158/comp_arch_codas_2019.pdf
+ *  - https://en.wikipedia.org/wiki/FLOPS
+*/
 
 double *generate_random_matrix(int rows, int cols)
 {
@@ -74,7 +88,7 @@ int main()
         {
             memset(C, 0.0, N * N * sizeof(double)); // Reset C to zero
             gemm_simd(N, N, N, A, N, B, N, C, N);
-            // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
+            // cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
         }
         uint64_t end = nanos();
 
@@ -141,39 +155,7 @@ int main()
 
 // -lmkl_rt
 
-// valgrind --tool=callgrind ./gemm
 // valgrind --tool=cachegrind ./gemm
-
-/* DEBUG
-        double A_data[] = {
-            0.771436, 0.311803, 0.419769, 0.506543, 0.689725, 0.538201, 0.362538, 0.301766,
-            0.923273, 0.970391, 0.846840, 0.484018, 0.403277, 0.236746, 0.569909, 0.148699,
-            0.633787, 0.642778, 0.950191, 0.611267, 0.567098, 0.033122, 0.567154, 0.350387,
-            0.155592, 0.151729, 0.592983, 0.600836, 0.537108, 0.352212, 0.945186, 0.308544,
-            0.664015, 0.364955, 0.815087, 0.353739, 0.903156, 0.177626, 0.655505, 0.826429,
-            0.148016, 0.502345, 0.310447, 0.551294, 0.739091, 0.880355, 0.699992, 0.372878,
-            0.523133, 0.650183, 0.984145, 0.090231, 0.683305, 0.551299, 0.440618, 0.838897,
-            0.703028, 0.033601, 0.439733, 0.240136, 0.385813, 0.384919, 0.548681, 0.049827};
-
-        double B_data[] = {
-            0.749874, 0.363768, 0.403567, 0.653030, 0.541394, 0.059072, 0.479459, 0.689410,
-            0.561417, 0.789906, 0.240703, 0.300508, 0.670262, 0.940696, 0.673386, 0.193395,
-            0.590879, 0.657531, 0.283626, 0.274183, 0.208830, 0.724243, 0.113080, 0.911858,
-            0.757844, 0.552813, 0.151994, 0.143657, 0.937732, 0.700675, 0.193484, 0.687606,
-            0.064443, 0.597051, 0.340636, 0.605837, 0.656123, 0.820095, 0.295246, 0.217540,
-            0.610002, 0.535950, 0.518048, 0.280263, 0.476645, 0.191435, 0.473658, 0.067524,
-            0.848966, 0.757283, 0.341707, 0.057795, 0.481527, 0.454787, 0.969653, 0.239371,
-            0.007600, 0.121648, 0.383027, 0.945332, 0.822323, 0.576512, 0.632937, 0.886766};
-
-        // 使用_mm_malloc确保内存对齐
-        double *A = (double *)_mm_malloc(8 * 8 * sizeof(double), 32);
-        memcpy(A, A_data, 8 * 8 * sizeof(double));
-
-        double *B = (double *)_mm_malloc(8 * 8 * sizeof(double), 32);
-        memcpy(B, B_data, 8 * 8 * sizeof(double));
-
-*/
-
 
 // double *generate_random_matrix(int rows, int cols)
 // {
