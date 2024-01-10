@@ -20,14 +20,12 @@ void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, 
         {
             for (int k = 0; k < size; k++)
             {
-                // 使用 AVX2 加速
                 for (int i = 0; i <= size - 4; i += 4)
                 {
                     __m256d a_vec = _mm256_load_pd(&A(rowA + i, colA + k));
                     __m256d b_val = _mm256_broadcast_sd(&B(rowB + k, colB + j));
                     __m256d c_vec = _mm256_load_pd(&C(rowC + i, colC + j));
 
-                    // 执行乘法和加法操作
                     c_vec = _mm256_add_pd(c_vec, _mm256_mul_pd(a_vec, b_val));
 
                     _mm256_store_pd(&C(rowC + i, colC + j), c_vec);
