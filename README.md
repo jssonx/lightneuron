@@ -104,7 +104,7 @@ LightNeuron places a strong emphasis on optimizing General Matrix Multiply (GEMM
 - **Compiler Optimization Flags**: Employs -O2/-O3 levels for code efficiency.
 - **Parallel Loops**: Uses OpenMP directives to distribute loop execution across multiple CPU threads.
 - **Loop Tiling (Blocking)**: Optimizes spatial and temporal locality for caches.
-- **Divide-and-Conqure**: Splits large matrices into smaller sub-matrices for better cache performance.
+- **Divide-and-Conquer**: Splits large matrices into smaller sub-matrices for better cache performance.
 - **SIMD Intrinsics with Data Alignment**: Uses AVX2 instructions and aligns data to boost vectorized operations and memory throughput.
 
 The result of these enhancements is a notable increase in CPU computational efficiency, boosting the performance of matrix multiplication operations considerably.
