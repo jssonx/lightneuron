@@ -1,64 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <cblas.h>
 #include <omp.h>
 #include <assert.h>
 
-#define THRESHOLD 16
+#define THRESHOLD 32
 #define A(i, j) a[(j) * lda + (i)]
 #define B(i, j) b[(j) * ldb + (i)]
 #define C(i, j) c[(j) * ldc + (i)]
 
-void gemm_omp(int m, int n, int k,
-              double *a, int lda,
-              double *b, int ldb,
-              double *c, int ldc)
+void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, int colB, int rowC, int colC, int size, int lda, int ldb, int ldc)
 {
-    // Check if m, n, k are powers of 2
-    assert((m & (-m)) == m);
-    assert((n & (-n)) == n);
-    assert((k & (-k)) == k);
-
-    if (m <= THRESHOLD || n <= THRESHOLD || k <= THRESHOLD) {
-        // Base case: perform matrix multiplication
-        for (int j = 0; j < n; ++j) {
-            for (int p = 0; p < k; ++p) {
-                for (int i = 0; i < m; ++i) {
-                    C(i, j) += A(i, p) * B(p, j);
+        if (size <= THRESHOLD)
+        {
+                for (int j = 0; j < size; j++)
+                {
+                        for (int k = 0; k < size; k++)
+                        {
+                                for (int i = 0; i < size; i++)
+                                {
+                                        C(rowC + i, colC + j) += A(rowA + i, colA + k) * B(rowB + k, colB + j);
+                                }
+                        }
                 }
-            }
         }
-    } else {
-        // Divide and conquer by dividing the matrices into four sub-matrices of m/2, n/2, k/2
-        // Create OpenMP tasks to execute recursive calls in parallel
-        
-        // Top left quadrant
-        #pragma omp task
-        gemm_omp(m/2, n/2, k/2, a, lda, b, ldb, c, ldc);
+        else
+        {
+                int newSize = size / 2;
 
-        // Top right quadrant
-        #pragma omp task
-        gemm_omp(m/2, n/2, k/2, a, lda, b + ldb*k/2, ldb, c + ldc*n/2, ldc);
+/* Method 1 */
+// Multiply four quadrants and get A00B00, A00B01, A10B10, A10B01
+#pragma omp task
+                gemm_helper(a, b, c, rowA, colA, rowB, colB, rowC, colC, newSize, lda, ldb, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA, colA, rowB, colB + newSize, rowC, colC + newSize, newSize, lda, ldb, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA + newSize, colA, rowB, colB, rowC + newSize, colC, newSize, lda, ldb, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA + newSize, colA, rowB, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
+#pragma omp taskwait
 
-        // Bottom left quadrant
-        #pragma omp task
-        gemm_omp(m/2, n/2, k/2, a + lda*m/2, lda, b, ldb, c + m/2, ldc);
+                // Multiply four quadrants and get A01B10, A01B11, A11B10, A11B11
+                // Add to the above result, get C00, C01, C10, C11 = A00B00 + A01B10, A00B01 + A01B11, A10B00 + A11B10, A10B01 + A11B11
 
-        // Bottom right quadrant
-        #pragma omp task
-        gemm_omp(m/2, n/2, k/2, a + lda*m/2, lda, b + ldb*k/2, ldb, c + ldc*n/2 + m/2, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA, colA + newSize, rowB + newSize, colB, rowC, colC, newSize, lda, ldb, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA, colA + newSize, rowB + newSize, colB + newSize, rowC, colC + newSize, newSize, lda, ldb, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB, rowC + newSize, colC, newSize, lda, ldb, ldc);
+#pragma omp task
+                gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
+#pragma omp taskwait
 
-        #pragma omp taskwait
-    }
+                /* Method 2 */
+                // Mul+Add respectively to get C00, C01, C10, C11
+
+                // gemm_helper(a, b, c, rowA, colA, rowB, colB, rowC, colC, newSize, lda, ldb, ldc);
+                // gemm_helper(a, b, c, rowA, colA + newSize, rowB + newSize, colB, rowC, colC, newSize, lda, ldb, ldc);
+
+                // gemm_helper(a, b, c, rowA, colA, rowB, colB + newSize, rowC, colC + newSize, newSize, lda, ldb, ldc);
+                // gemm_helper(a, b, c, rowA, colA + newSize, rowB + newSize, colB + newSize, rowC, colC + newSize, newSize, lda, ldb, ldc);
+
+                // gemm_helper(a, b, c, rowA + newSize, colA, rowB, colB, rowC + newSize, colC, newSize, lda, ldb, ldc);
+                // gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB, rowC + newSize, colC, newSize, lda, ldb, ldc);
+
+                // gemm_helper(a, b, c, rowA + newSize, colA, rowB, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
+                // gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
+        }
 }
 
-void gemm_rec_tiling(int m, int n, int k,
-                   double *a, int lda,
-                   double *b, int ldb,
-                   double *c, int ldc)
+void gemm_rec_tiling(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc)
 {
-    #pragma omp parallel
-    {
-        #pragma omp single
+// Initialize OpenMP task group
+#pragma omp parallel
         {
-            gemm_omp(m, n, k, a, lda, b, ldb, c, ldc);
+#pragma omp single
+                {
+                        gemm_helper(a, b, c, 0, 0, 0, 0, 0, 0, m, lda, ldb, ldc);
+                }
         }
-    }
 }
