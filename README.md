@@ -100,15 +100,6 @@ make perf TARGET=matmul_naive CACHE_LEVEL=L1 USE_PMU=1
 
 LightNeuron places a strong emphasis on optimizing General Matrix Multiply (GEMM) operations. This optimization leads to significant performance improvements, as measured in GFLOPS (Giga Floating Point Operations Per Second), particularly noticeable across a range of matrix dimensions. Key strategies employed in this optimization include:
 
-
-
-- **Intricate Loop Unrolling**: Enhances computational efficiency by reducing loop overhead.
-- **Proactive Data Prefetching**: Improves data access speeds from memory.
-- **Strategic Cache Management**: Optimizes the use of CPU cache to minimize data retrieval delays.
-- **Precise Data Alignment**: Ensures data is appropriately aligned in memory, reducing access times.
-- **Concurrent Multithreading**: Leverages parallel processing capabilities of modern CPUs.
-- **Specialized Instruction Sets Utilization**: Takes advantage of x86 architecture-specific features like AVX2 and SSE to accelerate computations.
-
 - **Loop Interchange**: Reorders nested loops to enhance memory access patterns and improve cache performance, eg. ijk -> kji.
 - **Compiler Optimization Flags**: Employs -O2/-O3 levels for code efficiency.
 - **Parallel Loops**: Uses OpenMP directives to distribute loop execution across multiple CPU threads.
