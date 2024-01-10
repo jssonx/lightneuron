@@ -68,19 +68,18 @@ int main()
 
         printf("Performing multiplication for N = %d...\n", N);
         uint64_t start = nanos();
-        gemm_rec_tiling(N, N, N, A, N, B, N, C, N);
-        // int num_iterations = 3;
-        // for (int i = 0; i < num_iterations; ++i)
-        // {
-        //     memset(C, 0.0, N * N * sizeof(double)); // Reset C to zero
-        //     gemm_rec_tiling(N, N, N, A, N, B, N, C, N);
-        //     // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
-        // }
+
+        int num_iterations = 3;
+        for (int i = 0; i < num_iterations; ++i)
+        {
+            memset(C, 0.0, N * N * sizeof(double)); // Reset C to zero
+            gemm_simd(N, N, N, A, N, B, N, C, N);
+            // cblas_dgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
+        }
         uint64_t end = nanos();
 
-        // double gflop = (2.0 * (double)N * (double)N * (double)N) * 1e-9 * (double)num_iterations;
         double gflop = (2.0 * (double)N * (double)N * (double)N) * 1e-9;
-        double s = (double)(end - start) * 1e-9;
+        double s = (double)(end - start) * 1e-9 / (double)num_iterations;
         printf("%f GFLOPS -- %.2f ms\n", gflop / s, s * 1e3);
         fprintf(f, "%d, %f\n", N, gflop / s);
 
