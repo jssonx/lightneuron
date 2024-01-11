@@ -53,27 +53,13 @@ void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, 
 #pragma omp task
                 gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
 #pragma omp taskwait
-
-                /* Method 2 */
-                // Mul+Add respectively to get C00, C01, C10, C11
-
-                // gemm_helper(a, b, c, rowA, colA, rowB, colB, rowC, colC, newSize, lda, ldb, ldc);
-                // gemm_helper(a, b, c, rowA, colA + newSize, rowB + newSize, colB, rowC, colC, newSize, lda, ldb, ldc);
-
-                // gemm_helper(a, b, c, rowA, colA, rowB, colB + newSize, rowC, colC + newSize, newSize, lda, ldb, ldc);
-                // gemm_helper(a, b, c, rowA, colA + newSize, rowB + newSize, colB + newSize, rowC, colC + newSize, newSize, lda, ldb, ldc);
-
-                // gemm_helper(a, b, c, rowA + newSize, colA, rowB, colB, rowC + newSize, colC, newSize, lda, ldb, ldc);
-                // gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB, rowC + newSize, colC, newSize, lda, ldb, ldc);
-
-                // gemm_helper(a, b, c, rowA + newSize, colA, rowB, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
-                // gemm_helper(a, b, c, rowA + newSize, colA + newSize, rowB + newSize, colB + newSize, rowC + newSize, colC + newSize, newSize, lda, ldb, ldc);
         }
 }
 
 void gemm_rec_tiling(int m, int n, int k, double *a, int lda, double *b, int ldb, double *c, int ldc)
 {
-// Initialize OpenMP task group
+        // Initialize OpenMP task group
+        omp_set_num_threads(8);
 #pragma omp parallel
         {
 #pragma omp single

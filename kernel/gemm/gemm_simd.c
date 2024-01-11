@@ -25,7 +25,7 @@ void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, 
                                         __m256d b_val = _mm256_broadcast_sd(&B(rowB + k, colB + j));
                                         __m256d c_vec = _mm256_load_pd(&C(rowC + i, colC + j));
 
-                                        c_vec = _mm256_add_pd(c_vec, _mm256_mul_pd(a_vec, b_val));
+                                        c_vec = _mm256_fmadd_pd(a_vec, b_val, c_vec);
 
                                         _mm256_store_pd(&C(rowC + i, colC + j), c_vec);
                                 }

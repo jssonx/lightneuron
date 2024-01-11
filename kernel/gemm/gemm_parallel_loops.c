@@ -15,9 +15,9 @@ void gemm_parallel_loops(int m, int n, int k,
     int i, j, p;
     
     #pragma omp parallel for
-    for (p = 0; p < k; ++p)
+    for (j = 0; j < n; ++j)
     {
-        for (j = 0; j < n; ++j)
+        for (p = 0; p < k; ++p)
         {   
             for (i = 0; i < m; ++i)
             {
