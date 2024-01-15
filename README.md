@@ -139,3 +139,5 @@ The following table showcases the GFLOPs performance of various kernels compared
 <!-- benchmark_results -->
 
 ![benchmark](./img/benchmark.png)
+
+*v1 denotes the naive implementation, while v2 through v10 sequentially represent the advanced enhancements detailed in the above table.*
