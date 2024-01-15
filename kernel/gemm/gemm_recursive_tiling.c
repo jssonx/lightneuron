@@ -4,6 +4,7 @@
 #include <cblas.h>
 #include <omp.h>
 #include <assert.h>
+#include <immintrin.h>
 
 #define THRESHOLD 32
 #define A(i, j) a[(j) * lda + (i)]
@@ -20,7 +21,8 @@ void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, 
                         {
                                 for (int i = 0; i < size; i++)
                                 {
-                                        C(rowC + i, colC + j) += A(rowA + i, colA + k) * B(rowB + k, colB + j);
+                                        // C(rowC + i, colC + j) += A(rowA + i, colA + k) * B(rowB + k, colB + j);
+                                        C(rowC + i, colC + j) += A(rowA + i, colA + k) * B(colB + j, rowB + k);
                                 }
                         }
                 }

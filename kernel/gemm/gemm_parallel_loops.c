@@ -21,6 +21,7 @@ void gemm_parallel_loops(int m, int n, int k,
         {   
             for (i = 0; i < m; ++i)
             {
+                // C(i, j) += A(i, p) * B(j, p);
                 C(i, j) += A(i, p) * B(p, j);
             }
         }

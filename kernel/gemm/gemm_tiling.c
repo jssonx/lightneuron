@@ -20,6 +20,7 @@ void gemm_tiling(int m, int n, int k,
                     for (int p = 0; p < TILE_SIZE; ++p) {
                         for (int i = 0; i < TILE_SIZE; ++i) {
                             C(i+ii, j+jj) += A(i+ii, p+kk) * B(p+kk, j+jj);
+                            // C(i+ii, j+jj) += A(i+ii, p+kk) * B(j+jj, p+kk);
                         }
                     }
                 }

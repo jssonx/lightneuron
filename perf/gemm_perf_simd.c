@@ -10,7 +10,8 @@
 
 double *generate_random_matrix(int rows, int cols)
 {
-    double *matrix = (double *)malloc(rows * cols * sizeof(double));
+    // Ensure alignment for AVX operations (32-byte alignment for AVX)
+    double *matrix = (double *)_mm_malloc(rows * cols * sizeof(double), 32); // 32 bytes is the width of the avx2 register
     if (matrix == NULL)
     {
         fprintf(stderr, "Failed to allocate memory for the matrix\n");
@@ -26,7 +27,7 @@ double *generate_random_matrix(int rows, int cols)
 
 void free_matrix(double *matrix)
 {
-    free(matrix);
+    _mm_free(matrix);
 }
 
 void print_matrix_col_major(const char *name, double *matrix, int rows, int cols)
@@ -70,9 +71,9 @@ int main()
     {
         double *A = generate_random_matrix(N, N);
         double *B = generate_random_matrix(N, N);
-        double *A_transposed = generate_random_matrix(N, N);
-        double *B_transposed = generate_random_matrix(N, N);
-        double *C = (double *)malloc(N * N * sizeof(double));
+        double *A_transposed = (double *)_mm_malloc(N * N * sizeof(double), 32);
+        double *B_transposed = (double *)_mm_malloc(N * N * sizeof(double), 32);
+        double *C = (double *)_mm_malloc(N * N * sizeof(double), 32);
         memset(C, 0.0, N * N * sizeof(double));
 
         transpose_matrix(A, A_transposed, N, N);
@@ -97,7 +98,7 @@ int main()
         fprintf(f, "%d, %f\n", N, gflop / s);
 
         // Add a module to check the result using CBLAS
-        double *C_cblas = (double *)malloc(N * N * sizeof(double));
+        double *C_cblas = (double *)_mm_malloc(N * N * sizeof(double), 32);
         memset(C_cblas, 0.0, N * N * sizeof(double));
         cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C_cblas, N);
 
