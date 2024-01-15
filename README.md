@@ -109,11 +109,11 @@ LightNeuron places a strong emphasis on optimizing General Matrix Multiply (GEMM
 
 The result of these enhancements is a notable increase in CPU computational efficiency, boosting the performance of matrix multiplication operations considerably.
 
-| Implementation                  | Cache References (millions) | L1-d Cache Misses (millions) | LL Cache Misses (millions) |
-|---------------------------------|----------------------------:|----------------------------:|--------------------------:|
-| +parallel loops                 | 4934.44                     | 406.47                      | 404.9                     |
-| +tiling                         | 5010.46                     | 620.66                      | 13.29                     |
-| +parallel divide-and-conquer    | 1881.06                     | 152.97                      | 5.21                      |
+| Implementation               | Cache References (millions) | L1-d Cache Misses (millions) | LL Cache Misses (millions) |
+| ---------------------------- | --------------------------: | ---------------------------: | -------------------------: |
+| +parallel loops              |                     4934.44 |                       406.47 |                      404.9 |
+| +tiling                      |                     5010.46 |                       620.66 |                      13.29 |
+| +parallel divide-and-conquer |                     1881.06 |                       152.97 |                       5.21 |
 
 Tiling achieves a 96% reduction in last-level cache misses, and parallel divide-and-conquer further lowers overall cache references and minimizes cache misses.
 
@@ -125,16 +125,18 @@ GFLOPs at matrix size 1200x1200:
 
 <!-- benchmark_results -->
 
-| Version Implementation          | Running Times (ms) | Relative Speedup | Absolute Speedup | GFLOPS | Percent of Peak |
-|---------------------------------|-------------------:|-----------------:|-----------------:|-------:|----------------:|
-| naive                           | 11190.93           | 1.00             | 1.00             | 0.19   | 0.19%           |
-| +interchange loops              | 4267.47            | 2.62             | 2.62             | 0.50   | 0.49%           |
-| +optimization flags             | 675.76             | 6.32             | 16.56            | 3.18   | 3.10%           |
-| +parallel loops                 | 147.87             | 4.57             | 75.68            | 14.52  | 14.18%          |
-| +tiling                         | 101.3              | 1.46             | 110.47           | 21.20  | 20.70%          |
-| +parallel devide-and-conquer    | 89.4               | 1.13             | 125.18           | 24.02  | 23.46%          |
-| +avx2 intrinsics+data alignment | 81.02              | 1.10             | 138.13           | 26.51  | 25.88%          |
-| +compiler vectorization         | 74.31              | 1.09             | 150.60           | 28.90  | 28.22%          |
-| Intel MKL                       | 27.54              | 2.70             | 406.35           | 77.98  | 76.15%          |
+| Version Implementation                                                                                                       | Running Times (ms) | Relative Speedup | Absolute Speedup | GFLOPS | Percent of Peak | Percent of Intel MKL |
+| ---------------------------------------------------------------------------------------------------------------------------- | -----------------: | ---------------: | ---------------: | -----: | --------------: | -------------------: |
+| naive                                                                                                                        |           11190.93 |             1.00 |             1.00 |   0.19 |           0.19% |                0.25% |
+| naive + interchange loops                                                                                                    |            4267.47 |             2.62 |             2.62 |   0.50 |           0.49% |                0.65% |
+| naive + interchange loops + optimization flags                                                                               |             675.76 |             6.32 |            16.56 |   3.18 |           3.10% |                4.08% |
+| naive + interchange loops + optimization flags + parallel loops                                                              |             147.87 |             4.57 |            75.68 |  14.52 |          14.18% |               18.62% |
+| naive + interchange loops + optimization flags + parallel tiling                                                             |              101.3 |             1.46 |           110.47 |  21.20 |          20.70% |               27.19% |
+| naive + interchange loops + optimization flags + parallel divide-and-conquer                                                 |              89.52 |             1.13 |           125.01 |  23.99 |          23.43% |               30.76% |
+| naive + interchange loops + optimization flags + parallel divide-and-conquer + avx2 intrinsics + data alignment              |              71.11 |             1.26 |           157.37 |  30.20 |          29.49% |               38.73% |
+| naive + interchange loops + optimization flags + parallel tiling + avx2 intrinsics + data alignment                          |              62.41 |             1.14 |           179.31 |  34.41 |          33.60% |               44.13% |
+| naive + interchange loops + optimization flags + parallel divide-and-conquer + avx2 intrinsics + data alignment + coarsening |              43.62 |             1.43 |           256.56 |  49.23 |          48.08% |               63.14% |
+| Intel MKL                                                                                                                    |              27.54 |             1.58 |           406.35 |  77.98 |          76.15% |              100.00% |
+
 
 <!-- benchmark_results -->
