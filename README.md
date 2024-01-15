@@ -117,11 +117,9 @@ The result of these enhancements is a notable increase in CPU computational effi
 
 Tiling achieves a 96% reduction in last-level cache misses, and parallel divide-and-conquer further lowers overall cache references and minimizes cache misses.
 
-### Performance Benchmark at Matrix Size 1200x1200
+### Performance Benchmark
 
 The following table showcases the GFLOPs performance of various kernels compared to Intel MKL, at a matrix size of 1200x1200.
-
-GFLOPs at matrix size 1200x1200:
 
 <!-- benchmark_results -->
 
@@ -138,5 +136,6 @@ GFLOPs at matrix size 1200x1200:
 | naive + interchange loops + optimization flags + parallel divide-and-conquer + avx2 intrinsics + data alignment + coarsening |              43.62 |             1.43 |           256.56 |  49.23 |          48.08% |               63.14% |
 | Intel MKL                                                                                                                    |              27.54 |             1.58 |           406.35 |  77.98 |          76.15% |              100.00% |
 
-
 <!-- benchmark_results -->
+
+![benchmark](./img/benchmark.png)
