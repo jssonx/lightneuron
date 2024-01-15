@@ -87,7 +87,7 @@ int main()
         {
             memset(C, 0.0, N * N * sizeof(double)); // Reset C to zero to check the result
             // gemm_interchange_loops(N, N, N, A, N, B_transposed, N, C, N);
-            gemm_simd(N, N, N, A, N, B_transposed, N, C, N);
+            gemm_simd(N, N, N, A, N, B, N, C, N);
             // cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
         }
         uint64_t end = nanos();
