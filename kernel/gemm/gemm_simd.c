@@ -3,17 +3,23 @@
 #include <math.h>
 #include <omp.h>
 #include <assert.h>
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
 #include <immintrin.h>
+#define HAS_AVX 1
+#else
+#define HAS_AVX 0
+#endif
 
 #define THRESHOLD 64
 #define A(i, j) a[(j) * lda + (i)]
 #define B(i, j) b[(j) * ldb + (i)]
 #define C(i, j) c[(j) * ldc + (i)]
 
-void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, int colB, int rowC, int colC, int size, int lda, int ldb, int ldc)
+static void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, int colB, int rowC, int colC, int size, int lda, int ldb, int ldc)
 {
         if (size <= THRESHOLD)
         {
+#if HAS_AVX
                 // Base case: perform matrix multiplication with AVX
                 // Transpose B
                 for (int k = 0; k < size; k += 4)
@@ -39,6 +45,20 @@ void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, 
                                 }
                         }
                 }
+#else
+                // Fallback: scalar implementation for non-x86 platforms
+                for (int j = 0; j < size; j++)
+                {
+                        for (int k = 0; k < size; k++)
+                        {
+                                double b_val = B(rowB + k, colB + j);
+                                for (int i = 0; i < size; i++)
+                                {
+                                        C(rowC + i, colC + j) += A(rowA + i, colA + k) * b_val;
+                                }
+                        }
+                }
+#endif
         }
         else
         {

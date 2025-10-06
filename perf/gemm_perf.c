@@ -3,10 +3,17 @@
 #include <string.h>
 #include <math.h>
 #include <time.h>
+#include <sys/stat.h>
 #include "../kernel/gemm/gemm.h"
 #include "helpers.h"
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
 #include <immintrin.h>
-#include "mkl.h"
+#endif
+#ifdef __APPLE__
+#include <Accelerate/Accelerate.h>
+#else
+#include <cblas.h>
+#endif
 
 double *generate_random_matrix(int rows, int cols)
 {
@@ -59,12 +66,37 @@ int main()
     // srand(time(NULL));
     srand(42);
 
+    // ============================================================
+    // CONFIGURATION: Choose GEMM implementation to test
+    // ============================================================
+    GemmType gemm_type = GEMM_REC_TILING;  // 👈 Change this to test different implementations
+
+    // Available options:
+    // GEMM_NAIVE       - v1: Basic ijk loop
+    // GEMM_INTERCHANGE - v2: Loop interchange (jpi)
+    // GEMM_PARALLEL    - v4: OpenMP parallel loops
+    // GEMM_TILING      - v5: Loop tiling/blocking
+    // GEMM_REC_TILING  - v6: Recursive divide-and-conquer
+    // GEMM_SIMD        - v7: AVX2 SIMD + recursive
+    // GEMM_BLAS        - v10: BLAS library
+    // GEMM_CUDA_STYLE  - v11: CUDA-inspired multi-level tiling
+    // ============================================================
+
+    // Create bench directory if it doesn't exist
+#ifdef _WIN32
+    _mkdir("./bench");
+#else
+    mkdir("./bench", 0755);
+#endif
+
     FILE *f = fopen("./bench/OpenBLAS.txt", "w");
     if (f == NULL)
     {
         printf("Error opening file!\n");
         exit(1);
     }
+
+    printf("Testing GEMM implementation: %s\n\n", gemm_get_name(gemm_type));
 
     for (int N = 1024; N <= 1024; N += 40)
     {
@@ -80,14 +112,19 @@ int main()
 
         printf("Performing multiplication for N = %d...\n", N);
         uint64_t start = nanos();
-        // gemm_tiling(N, N, N, A, N, B, N, C, N);
         int num_iterations = 3;
         for (int i = 0; i < num_iterations; ++i)
         {
             memset(C, 0.0, N * N * sizeof(double)); // Reset C to zero to check the result
-            // gemm_interchange_loops(N, N, N, A, N, B_transposed, N, C, N);
-            gemm_simd(N, N, N, A, N, B_transposed, N, C, N);
-            // cblas_dgemm(CblasColMajor, CblasNoTrans, CblasNoTrans, N, N, N, 1.0, A, N, B, N, 0.0, C, N);
+
+            // Use dispatcher to call the selected implementation
+            if (gemm_type == GEMM_BLAS) {
+                // BLAS uses different matrix layout (not transposed)
+                gemm_dispatch(gemm_type, N, N, N, A, N, B, N, C, N);
+            } else {
+                // Other implementations use transposed B
+                gemm_dispatch(gemm_type, N, N, N, A, N, B_transposed, N, C, N);
+            }
         }
         uint64_t end = nanos();
 

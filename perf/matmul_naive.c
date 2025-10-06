@@ -22,9 +22,20 @@ void free_matrix(float **matrix, int rows) {
     free(matrix);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     srand(time(NULL));
-    int A_rows = 1300, A_cols = 1300, B_rows = 1300, B_cols = 1300;
+
+    // Default size: 1300x1300
+    int size = 1300;
+    if (argc >= 2) {
+        size = atoi(argv[1]);
+        if (size <= 0) {
+            printf("Error: Invalid matrix size '%s'\n", argv[1]);
+            return 1;
+        }
+    }
+
+    int A_rows = size, A_cols = size, B_rows = size, B_cols = size;
 
     if (A_cols != B_rows) {
         printf("Matrix dimensions incompatible for multiplication.\n");
@@ -34,7 +45,7 @@ int main() {
     float **A = generate_random_matrix(A_rows, A_cols);
     float **B = generate_random_matrix(B_rows, B_cols);
 
-    printf("Performing naive multiplication...\n");
+    printf("Performing naive multiplication (%dx%d)...\n", size, size);
     uint64_t start = nanos();
     float **C = matmul(A, B, A_rows, A_cols, B_rows, B_cols);
     uint64_t end = nanos();
