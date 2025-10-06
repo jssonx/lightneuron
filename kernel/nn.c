@@ -41,12 +41,12 @@ void destroyConvOutput(float ***convOutput, int convOutputSize)
 int forwardPass(float ***image, int numChannels, float ****conv1WeightsData, float **fc1WeightsData, float **fc2WeightsData, float *conv1BiasData, float *fc1BiasData, float *fc2BiasData)
 {
   // 1. Perform the convolution operation
-  float ***convOutput = convolution(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3);
+  // float ***convOutput = convolution(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3);
   // float ***convOutput = convolution_im2col(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3, MATMUL_BLOCKING);
   // float ***convOutput = convolution_im2col(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3, MATMUL_BASE);
   // float ***convOutput = convolution_im2col(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3, MATMUL_BLAS);
   // float ***convOutput = convolution_im2col(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3, MATMUL_THREAD);
-  // float ***convOutput = convolution_im2col(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3, MATMUL_SPARSE);
+  float ***convOutput = convolution_im2col(image, numChannels, conv1WeightsData, conv1BiasData, 32, 28, 3, MATMUL_SPARSE);
 
   // 2. Flatten the output
   float *fcInput = flatten(convOutput, 26, 32);

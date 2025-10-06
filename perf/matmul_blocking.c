@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include "kernel/matrix_ops.h"
+#include "helpers.h"
 
 float **generate_random_matrix(int rows, int cols) {
     float **matrix = (float **)malloc(rows * sizeof(float *));
@@ -21,9 +22,20 @@ void free_matrix(float **matrix, int rows) {
     free(matrix);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
     srand(time(NULL));
-    int A_rows = 1300, A_cols = 1300, B_rows = 1300, B_cols = 1300;
+
+    // Default size: 1300x1300
+    int size = 1300;
+    if (argc >= 2) {
+        size = atoi(argv[1]);
+        if (size <= 0) {
+            printf("Error: Invalid matrix size '%s'\n", argv[1]);
+            return 1;
+        }
+    }
+
+    int A_rows = size, A_cols = size, B_rows = size, B_cols = size;
 
     if (A_cols != B_rows) {
         printf("Matrix dimensions incompatible for multiplication.\n");
@@ -33,8 +45,15 @@ int main() {
     float **A = generate_random_matrix(A_rows, A_cols);
     float **B = generate_random_matrix(B_rows, B_cols);
 
-    printf("Performing blocking multiplication...\n");
+    printf("Performing blocking multiplication (%dx%d)...\n", size, size);
+    uint64_t start = nanos();
     float **C = matmul_blocking(A, B, A_rows, A_cols, B_rows, B_cols);
+    uint64_t end = nanos();
+
+    int N = A_rows;
+    double gflop = (2.0*N*N*N)*1e-9;
+    double s = (end-start)*1e-9;
+    printf("%f GFLOPS -- %.2f ms\n", gflop/s, s*1e3);
 
     // Cleanup
     free_matrix(A, A_rows);

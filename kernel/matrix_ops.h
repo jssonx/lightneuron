@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <omp.h>
-#include <pthread.h> 
-#include <cblas.h>
+#include <pthread.h>
+#include "platform_cblas.h"
 
 float **matmul(float **A, float **B, int A_rows, int A_cols, int B_rows, int B_cols);
 float **matmul_blocking(float **A, float **B, int A_rows, int A_cols, int B_rows, int B_cols);
