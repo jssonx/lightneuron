@@ -56,7 +56,12 @@ all_tests:
 # Core implementations (direct build)
 .PHONY: $(PERF_CORE)
 $(PERF_CORE):
-	$(CC) -o $@ ./perf/$@.c $(COMMON_SRC) $(CFLAGS) $(HDF5_FLAGS) $(OMP_FLAGS) $(BLAS_FLAGS)
+	@if [ "$@" = "gemm_perf" ]; then \
+		GEMM_SRC="./kernel/gemm/gemm_naive.c ./kernel/gemm/gemm_interchange_loops.c ./kernel/gemm/gemm_parallel_loops.c ./kernel/gemm/gemm_tiling.c ./kernel/gemm/gemm_recursive_tiling.c ./kernel/gemm/gemm_simd.c ./kernel/gemm/gemm_cuda_style.c ./kernel/gemm/gemm_dispatch.c"; \
+		$(CC) -o $@ ./perf/$@.c $(COMMON_SRC) $$GEMM_SRC $(CFLAGS) $(HDF5_FLAGS) $(OMP_FLAGS) $(BLAS_FLAGS); \
+	else \
+		$(CC) -o $@ ./perf/$@.c $(COMMON_SRC) $(CFLAGS) $(HDF5_FLAGS) $(OMP_FLAGS) $(BLAS_FLAGS); \
+	fi
 	@if [ "$(USE_PMU)" = "1" ] && [ "$(UNAME_S)" != "Darwin" ]; then \
 		/usr/local/pmu-tools/pmu-tools/toplev.py --core S0-C0 -$(LEVEL) -v --no-desc taskset -c 0 ./$@; \
 	else \

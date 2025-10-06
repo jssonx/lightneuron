@@ -1,17 +1,23 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#ifdef __APPLE__
+#include <Accelerate/Accelerate.h>
+#else
 #include <cblas.h>
+#endif
 #include <omp.h>
 #include <assert.h>
+#if defined(__x86_64__) || defined(_M_X64) || defined(__i386) || defined(_M_IX86)
 #include <immintrin.h>
+#endif
 
 #define THRESHOLD 32
 #define A(i, j) a[(j) * lda + (i)]
 #define B(i, j) b[(j) * ldb + (i)]
 #define C(i, j) c[(j) * ldc + (i)]
 
-void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, int colB, int rowC, int colC, int size, int lda, int ldb, int ldc)
+static void gemm_helper(double *a, double *b, double *c, int rowA, int colA, int rowB, int colB, int rowC, int colC, int size, int lda, int ldb, int ldc)
 {
         if (size <= THRESHOLD)
         {
